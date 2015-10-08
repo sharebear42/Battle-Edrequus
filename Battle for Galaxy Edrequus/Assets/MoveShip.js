@@ -6,9 +6,8 @@ public var target: Vector3;
 public var move: boolean;
 public var movesLeft: float = 3;
 
-private var hexController: HexController;
-
-private var createHexGrid: CreateHexGrid;
+var createHexGrid: CreateHexGrid;
+var hexControl: HexController;
 
 function Start() {
 	move = false;
@@ -27,10 +26,24 @@ function FixedUpdate () {
 		transform.position = Vector3.Lerp(transform.position, target, shipSpeed * Time.deltaTime);
 		var dist: float = Vector3.Distance(target, transform.position);
 	
-		if (move == true && dist < 0.01) 
+		if (move == true && dist < 0.01) {
 			move = false;
+			if (move == false) {
+				var hexes: GameObject[] = createHexGrid.hexes;
+				for (var hex: GameObject in hexes) {
+					hexControl = hex.GetComponentInChildren.<HexController>();
+					if (hexControl != null) {
+						hexControl.CheckPos();
+					}
+				}
+			}
+		}
+		else
+			Debug.Log ("no script on hex " + Time.time + " s");
+		
 	}
 }
+
 
 public function Move() {
 	var dist: float = Vector3.Distance(target,transform.position);
@@ -40,13 +53,14 @@ public function Move() {
 
 function OnMouseDown () {
 	var hexes: GameObject[] = createHexGrid.hexes;
-	for (var hex : GameObject in hexes) {
-		hex = GameObject.Find ("Blue_Hexagon");
-		hexController = hex.GetComponent.<HexController>();
-			
-		hexController.CheckPos();
-			
-		Debug.Log ("checkPos() " + Time.time + " s");
+	for (var hex: GameObject in hexes) {
+		hexControl = hex.GetComponentInChildren.<HexController>();
+		if (hexControl != null) {
+			hexControl.CheckPos();
+		}
+		else
+			Debug.Log ("no script on hex " + Time.time + " s");
+		
 	}
 }
 	

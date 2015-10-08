@@ -22,11 +22,15 @@ function Start() {
 function OnMouseDown () {
 	playerShip = GameObject.FindWithTag ("Player");
 	moveShip = playerShip.GetComponent.<MoveShip>();
-	moveShip.move = true;
-	
-	moveShip.target = transform.parent.position;
-	moveShip.Move();
-	Debug.Log ("mouse click " + Time.time + " s");
+	if (moveShip.movesLeft > 0.2 && canMove == true) {	
+		moveShip.move = true;
+		
+		moveShip.target = transform.parent.position;
+		moveShip.Move();
+		Debug.Log ("mouse click " + Time.time + " s");
+	}
+	else 
+		Debug.Log ("NO CAN MOVE HERE!!" + Time.time + " s");
 }
 
 function OnMouseEnter () {
@@ -72,7 +76,7 @@ function OnTriggerExit(movTrigger: Collider) {
 public function CheckPos () {
 	
 	var dist: float = Vector3.Distance(playerShip.transform.position, transform.parent.position);
-	
+	Debug.Log ("exec checkPos " + dist);
 	if (dist - 0.2 <= moveShip.movesLeft * 1.74) {
 		rend.material.color = green1;
 		canMove = true;
@@ -81,6 +85,7 @@ public function CheckPos () {
 	else {
 		rend.material.color = blue1;
 		canMove = false;
+		
 	}
 }	
 
